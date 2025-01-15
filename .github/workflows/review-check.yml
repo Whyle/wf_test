@@ -30,6 +30,7 @@ jobs:
           FAILED=0
 
           # Loop through each file
+          IFS=$'\n' # Change internal field separator to newline to handle spaces in filenames
           for FILE in $FILES; do
             echo "Checking $FILE..."
 
