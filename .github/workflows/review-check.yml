@@ -1,0 +1,64 @@
+name: Ensure Document Compliance
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - ready_for_review # Trigger the workflow when a PR is ready for review
+      - review_requested # Trigger the workflow when a review is requested
+      - synchronize      # Trigger the workflow when a PR is synchronized(when a new commit is pushed)
+      - opened           # Trigger the workflow when a PR is opened
+
+jobs:
+  document-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Find and Verify .typ files
+      - name: Find and verify .typ files
+        id: check-typ-files
+        run: |
+          # Find all .typ files in the repository
+          FILES=$(find . -name '*.typ')
+
+          # Initialize a flag to track failures
+          FAILED=0
+
+          # Loop through each file
+          for FILE in $FILES; do
+            echo "Checking $FILE..."
+
+            # Check for empty strings
+            if grep -E '\"\s*\"' "$FILE"; then
+              echo "Empty strings found in $FILE!"
+              FAILED=1
+            fi
+
+            # Check for excessive exclamation marks
+            if grep -E '".*!{4,}.*"' "$FILE"; then
+              echo "Found more than 4 exclamation marks in a string in $FILE!"
+              FAILED=1
+            fi
+          done
+
+          # Fail the job if any issues were found
+          if [ $FAILED -eq 1 ]; then
+            echo "One or more .typ files failed the compliance check."
+            exit 1
+          fi
+
+          echo "All .typ files passed the compliance checks."
+
+      # Step 3: Set status message
+      - name: Set status message
+        if: failure()
+        run: echo "Please fix the issues in the .typ files before merging."
+
+      - name: Notify success
+        if: success()
+        run: echo "All .typ file checks passed!"
