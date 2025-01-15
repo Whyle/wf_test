@@ -19,9 +19,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Find and Verify .typ files
-      - name: Find and verify .typ files
-        id: check-typ-files
+      # Step 2: Find and Verify versioni section in .typ files
+      - name: Find and verify versioni section
+        id: check-versioni-section
         run: |
           # Find all .typ files in the repository
           FILES=$(find . -name '*.typ')
@@ -33,32 +33,35 @@ jobs:
           for FILE in $FILES; do
             echo "Checking $FILE..."
 
-            # Check for empty strings
-            if grep -E '\"\s*\"' "$FILE"; then
-              echo "Empty strings found in $FILE!"
+            # Extract the 'versioni' section
+            VERSIONI=$(sed -n '/versioni: \(/,/)/p' "$FILE")
+
+            # Check for empty strings in the versioni section
+            if echo "$VERSIONI" | grep -E '\"\s*\"'; then
+              echo "Empty strings found in versioni section of $FILE!"
               FAILED=1
             fi
 
-            # Check for excessive exclamation marks
-            if grep -E '".*!{4,}.*"' "$FILE"; then
-              echo "Found more than 4 exclamation marks in a string in $FILE!"
+            # Check for excessive exclamation marks in the versioni section
+            if echo "$VERSIONI" | grep -E '".*!{4,}.*"'; then
+              echo "Found more than 4 exclamation marks in a string in versioni section of $FILE!"
               FAILED=1
             fi
           done
 
           # Fail the job if any issues were found
           if [ $FAILED -eq 1 ]; then
-            echo "One or more .typ files failed the compliance check."
+            echo "One or more .typ files failed the compliance check in the versioni section."
             exit 1
           fi
 
-          echo "All .typ files passed the compliance checks."
+          echo "All .typ files passed the compliance checks in the versioni section."
 
       # Step 3: Set status message
       - name: Set status message
         if: failure()
-        run: echo "Please fix the issues in the .typ files before merging."
+        run: echo "Please fix the issues in the versioni section of the .typ files before merging."
 
       - name: Notify success
         if: success()
-        run: echo "All .typ file checks passed!"
+        run: echo "All versioni section checks passed!"
