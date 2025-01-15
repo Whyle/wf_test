@@ -34,7 +34,7 @@ jobs:
             echo "Checking $FILE..."
 
             # Extract the 'versioni' section
-            VERSIONI=$(sed -n '/versioni: \(/,/)/p' "$FILE")
+            VERSIONI=$(sed -n "/versioni: (/ , /)/{p}" $FILE')
 
             # Check for empty strings in the versioni section
             if echo "$VERSIONI" | grep -E '\"\s*\"'; then
