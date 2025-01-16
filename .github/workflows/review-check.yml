@@ -24,7 +24,7 @@ jobs:
         id: check-versioni-section
         run: |
           # Find all .typ files in the repository
-          FILES=$(find "$(pwd)" -name '*.typ')
+          FILES=$(find . -name '*.typ')
 
           # Initialize a flag to track failures
           FAILED=0
