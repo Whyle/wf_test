@@ -15,14 +15,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the code
+      # Step 1: Checkout the code with full fetch
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Fetch all history to ensure 'main' branch reference is available
 
       # Step 2: Find changed .typ files and verify the versioni section
       - name: Check changed .typ files
         id: check-versioni-section
         run: |
+          # Fetch the latest 'main' branch reference
+          git fetch origin main
+
           # Find changed .typ files in the PR
           FILES=$(git diff --name-only --diff-filter=ACM origin/main | grep '\.typ$' || true)
 
