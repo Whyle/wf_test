@@ -26,7 +26,7 @@ jobs:
         id: check-versioni-section
         run: |
           # Fetch the latest 'main' branch reference
-          git fetch origin main
+          git fetch origin main > /dev/null 2>&1
 
           # Find changed .typ files in the PR
           FILES=$(git diff --name-only --diff-filter=ACMR origin/main | grep '\.typ$' || true)
