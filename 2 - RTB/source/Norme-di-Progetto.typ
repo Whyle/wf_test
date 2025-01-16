@@ -28,7 +28,7 @@
     "Luca Ribon",
     "Correzione del contenuto,
 formattazione e stesura sezione Sviluppo",
-    "!!!!!!!!!!!",
+    "Frafra",
     "0.4.0",
     "08/01/2025",
     "Gabriele Magnelli",
