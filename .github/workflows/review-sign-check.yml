@@ -1,4 +1,4 @@
-name: Ensure Document Compliance
+name: Check Document Verifier Sign
 
 on:
   pull_request:
